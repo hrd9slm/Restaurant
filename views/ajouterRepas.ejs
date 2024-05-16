@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajouter Repas</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+      }
+      form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Ajouter un Repas</h1>
+    <form action="/ajouter-repas" method="POST" enctype="multipart/form-data">
+      <label for="nom">Nom</label>
+      <input type="text" name="nom" required />
+      <br />
+      <label for="description">Description</label>
+      <textarea name="description" required></textarea>
+      <br />
+      <label for="prix">Prix</label>
+      <input type="number" name="prix" step="0.01" min="0" required />
+      <br />
+      <label for="url_image">Image</label>
+      <input type="file" name="url_image" accept="image/*" required />
+      <br />
+      <br />
+      <label for="categorie_id">Categorie</label>
+      <select name="categorie_id" required>
+        <option value="">-- Choisir une Categorie --</option>
+        <% categories.forEach(categorie => { %>
+          <option value="<%= categorie.id %>"><%= categorie.nom %></option>
+      <% }) %>
+      </select>
+      <br />
+      <button type="submit">Ajouter un Repas</button>
+    </form>
+  </body>
+</html>

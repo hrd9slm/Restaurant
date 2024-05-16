@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model categorie {
+  id    Int     @id @default(autoincrement())
+  nom   String? @db.VarChar(255)
+  repas repas[]
+}
+
+model employee {
+  id            Int         @id @default(autoincrement())
+  nom           String?     @db.VarChar(255)
+  role          String?     @db.VarChar(100)
+  restaurant_id Int?
+  image_url     String?     @db.VarChar(255)
+  restaurant    restaurant? @relation(fields: [restaurant_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "employee_ibfk_1")
+
+  @@index([restaurant_id], map: "restaurant_id")
+}
+
+model newsletter {
+  id            Int         @id @default(autoincrement())
+  email         String?     @unique(map: "unique_email") @db.VarChar(255)
+  is_valid      Boolean?    @default(false)
+  restaurant_id Int?
+  restaurant    restaurant? @relation(fields: [restaurant_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "newsletter_ibfk_1")
+
+  @@index([restaurant_id], map: "restaurant_id")
+}
+
+model repas {
+  id           Int        @id @default(autoincrement())
+  nom          String?    @db.VarChar(255)
+  categorie_id Int?
+  image_url    String?    @db.VarChar(255)
+  prix         Decimal?   @db.Decimal(10, 2)
+  description  String?    @db.Text
+  categorie    categorie? @relation(fields: [categorie_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "repas_ibfk_1")
+
+  @@index([categorie_id], map: "categorie_id")
+}
+
+model restaurant {
+  id                  Int          @id @default(autoincrement())
+  nom                 String?      @db.VarChar(255)
+  email               String?      @unique(map: "email") @db.VarChar(255)
+  numero_de_telephone String?      @db.VarChar(20)
+  adresse             String?      @db.VarChar(255)
+  employee            employee[]
+  newsletter          newsletter[]
+}

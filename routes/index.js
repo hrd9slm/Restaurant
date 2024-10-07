@@ -1,38 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const homecontroller = require('../controllers/homecontroller');
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const path = require('path');
 const Joi = require('joi');
+const uploadFile=require("../middlewares/uploadMiddleware");
 
-const multer = require('multer');
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '..', 'public', 'img'));
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    }
-});
-
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5 Mb
-    },
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|gif/;
-        const mimetype = filetypes.test(file.mimetype);
-        if (mimetype) {
-            return cb(null, true);
-        } else {
-            cb(new Error('Seuls les fichiers images sont autorises (jpeg, jpg, png, gif)'));
-        }
-    }
-});
 
 const repasSchema = Joi.object({
     nom: Joi.string().required(),
@@ -41,7 +18,7 @@ const repasSchema = Joi.object({
     categorie_id: Joi.number().integer().required()
 });
 
-
+console.log("uploadFile",uploadFile());
 
 router.get('/',homecontroller.renderPage);
 router.post('/',homecontroller.newsLetter);
@@ -59,7 +36,7 @@ router.get('/repas', async(req, res) => {
     res.render('ajouterRepas',{categories}); 
 });
 
-router.post('/ajouter-repas', upload.single('url_image'), async (req, res) => {
+router.post('/ajouter-repas', uploadFile().single('url_image'), async (req, res) => {
     const { error, value } = repasSchema.validate(req.body);
     if (error) {
   

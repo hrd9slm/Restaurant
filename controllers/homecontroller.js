@@ -40,7 +40,7 @@ const homecontroller = {
     try {
       const repasDinner = await prisma.repas.findMany({
         where: {
-          categorie_id: 1,
+          categorie_id: 3,
         },
       });
       return repasDinner;
